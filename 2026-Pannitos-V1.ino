@@ -1,18 +1,20 @@
 const unsigned long SEIS_HORAS = 6UL * 60UL * 60UL * 1000UL; // 21,600,000 ms
 unsigned long tiempoInicio;
-const uint8_t tiempo_de_barrido = 5;
-const uint8_t tiempo_de_barrido_2 = 10;
+const uint16_t tiempo_de_barrido_1 = 1*1000;
+const uint16_t tiempo_de_barrido_2 = 2*1000;
+const uint16_t tiempo_de_barrido_3 = 3*1000;
+const uint16_t tiempo_de_barrido_5 = 5*1000;
 
 // ===== Definición de pines por letra =====
 int P[]  = {14,15,16,17,18,19,20};
 int A[]  = {2,3,4,5,6,7};
 int N1[] = {8,9,10,11,12,13};
-int N2[] = {22,24,26,28,30,32};
+int N2[] = {32,30,28,26,24,22};
 int I[]  = {34,36,38};
-int T[]  = {40,42,44,46,48,50,52};
-int O[]  = {23,25,27,29,31,33};
+int T[]  = {40,46,48,50,52,42,44};
+int O[]  = {27,25,23,33,31,29};
 int AP[] = {21};
-int S[]  = {35,37,39,41};
+int S[]  = {41,39,37,35};
 
 // ===== Vector completo en orden correcto =====
 int* letra[] = {P, A, N1, N2, I, T, O, AP, S};
@@ -56,30 +58,20 @@ void loop() {
     delay(1000);
     all_off(); 
     delay(1000);
-    all_on(); 
-    delay(1000);
-    all_off(); 
 
     llenado_secuencial_letras_left();
     delay(1000);
     all_off(); 
     delay(1000);
-    all_on(); 
-    delay(1000);
-    all_off(); 
+ 
 
     secuencial_letras_right();
-    delay(tiempo_de_barrido/totalLetras);
+    //delay(tiempo_de_barrido_1/totalLetras);
     all_off(); 
     secuencial_letras_left();
-    delay(tiempo_de_barrido/totalLetras);
+    //delay(tiempo_de_barrido_1/totalLetras);
     all_off(); 
-    secuencial_letras_right();
-    delay(tiempo_de_barrido/totalLetras);
-    all_off(); 
-    secuencial_letras_left();
-    delay(tiempo_de_barrido/totalLetras);
-    all_off(); 
+
 
     llenado_secuencial_letras_y_segmentos_right();
     delay(1000);
@@ -89,15 +81,15 @@ void loop() {
     delay(1000);
     all_off();
 
-    secuencial_letras_y_segmentos_right();
-    delay(1000);
-    all_off(); 
+    //secuencial_letras_y_segmentos_right();
+    //delay(1000);
+    //all_off(); 
 
-    secuencial_letras_y_segmentos_left();
-    delay(1000);
-    all_off(); 
+    //secuencial_letras_y_segmentos_left();
+    //delay(1000);
+    //all_off(); 
 
-    choque();
+    //choque();
   }
 }
 
@@ -107,8 +99,8 @@ void llenado_secuencial_letras_right(){
     for (int s = 0; s < segmento[l]; s++) {
       digitalWrite(letra[l][s], HIGH);        
     }
+    delay(tiempo_de_barrido_3/totalLetras); // mantener encendido
   }
-  delay(tiempo_de_barrido/totalLetras); // mantener encendido
 }
 
 // 2. llenado secuancial de letras izquierda
@@ -117,8 +109,8 @@ void llenado_secuencial_letras_left(){
     for (int s = 0; s < segmento[l]; s++) {
       digitalWrite(letra[l][s], HIGH);        
     }
+    delay(tiempo_de_barrido_3/totalLetras); // mantener encendido
   }
-  delay(tiempo_de_barrido/totalLetras); // mantener encendido
 }
 
 // 3. secuancial de letras derecha
@@ -132,8 +124,9 @@ void secuencial_letras_right(){
         digitalWrite(letra[l-1][s], LOW);               
       }
     }       
+    delay(tiempo_de_barrido_3/totalLetras); // mantener encendido
   }
-  delay(tiempo_de_barrido/totalLetras); // mantener encendido
+  
 }
 
 // 4. secuancial de letras izquierda
@@ -143,12 +136,13 @@ void secuencial_letras_left(){
       digitalWrite(letra[l][s], HIGH);        
     }
     if (l<(totalLetras-1)){
-      for (int s = 0; s < segmento[l]; s++) {
+      for (int s = 0; s < segmento[l+1]; s++) {
         digitalWrite(letra[l+1][s], LOW);               
       }
     }
+    delay(tiempo_de_barrido_3/totalLetras); // mantener encendido
   }
-  delay(tiempo_de_barrido/totalLetras); // mantener encendido
+  
 }
 
 // 5. llenado secuancial de letras y segmentos
@@ -156,7 +150,7 @@ void llenado_secuencial_letras_y_segmentos_right(){
   for (int l = 0; l < totalLetras; l++) {
     for (int s = 0; s < segmento[l]; s++) {
       digitalWrite(letra[l][s], HIGH);        
-      delay(tiempo_de_barrido_2/(46)); // velocidad de aparición
+      delay(tiempo_de_barrido_3/(46)); // velocidad de aparición
     }      
   }
 }
@@ -166,7 +160,7 @@ void llenado_secuencial_letras_y_segmentos_left(){
   for (int l = totalLetras - 1; l >= 0; l--){
     for (int s = segmento[l] - 1; s >= 0; s--){
       digitalWrite(letra[l][s], HIGH);        
-      delay(tiempo_de_barrido_2/(46)); // velocidad de aparición
+      delay(tiempo_de_barrido_3/(46)); // velocidad de aparición
     }      
   }
 }
@@ -181,7 +175,7 @@ void secuencial_letras_y_segmentos_right(){
       if (l != 0 || s != 0) {
         digitalWrite(letra[ultimaLetra][ultimoSegmento], LOW);
       }
-      delay(tiempo_de_barrido_2/(46)); // velocidad de aparición
+      delay(tiempo_de_barrido_5/(46)); // velocidad de aparición
       ultimaLetra = l;
       ultimoSegmento = s;
     }     
@@ -198,7 +192,7 @@ void secuencial_letras_y_segmentos_left(){
       if (l != totalLetras - 1 || s != segmento[l] - 1) {
         digitalWrite(letra[ultimaLetra][ultimoSegmento], LOW);
       }
-      delay(tiempo_de_barrido_2/(46)); // velocidad de aparición
+      delay(tiempo_de_barrido_5/(46)); // velocidad de aparición
       ultimaLetra = l;
       ultimoSegmento = s;
     }     
